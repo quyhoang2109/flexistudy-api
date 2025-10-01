@@ -1,0 +1,32 @@
+package com.quyhoang.identity_service.dto.request;
+
+import com.quyhoang.identity_service.validator.DobConstraint;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDate;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class UserCreationRequest {
+
+    @Size(min = 4, message = "USERNAME_INVALID")
+    String username;
+
+    String email;
+
+    @Size(min = 9, message = "PASSWORD_INVALID")
+    String password;
+    String firstName;
+    String lastName;
+    String address;
+    String phone;
+    String avatarUrl;
+
+    @DobConstraint(min = 12, message = "INVALID_DOB")
+    LocalDate dob;
+}
