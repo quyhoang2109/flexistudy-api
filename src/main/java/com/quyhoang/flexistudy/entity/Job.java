@@ -1,0 +1,79 @@
+package com.quyhoang.flexistudy.entity;
+
+import com.quyhoang.flexistudy.enums.EmployeeType;
+import com.quyhoang.flexistudy.enums.JobCategory;
+import com.quyhoang.flexistudy.enums.JobStatus;
+import com.quyhoang.flexistudy.enums.WorkMode;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Job {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
+
+    @Column(nullable = false, length = 200)
+    String title;
+
+    @Column(columnDefinition = "TEXT")
+    String description;
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    EmployeeType type;
+
+    Integer minSalary;
+    Integer maxSalary;
+    String currency; // VND, USD, ...
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    WorkMode mode;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    JobCategory category;
+
+
+    String city;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    JobStatus status;
+
+    @Column(nullable = false, updatable = false)
+    @Builder.Default
+    LocalDateTime postedAt = LocalDateTime.now();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    Company company;
+
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<JobShift> shifts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    List<JobRequiredSkill> requiredSkills = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "savedJobs")
+    private Set<User> savedByUsers = new HashSet<>();
+
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Application> applications = new ArrayList<>();
+
+}

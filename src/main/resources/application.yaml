@@ -24,4 +24,5 @@ jwt:
 app:
   file:
     storage-dir: C:/upload
-    download-prefix: http://localhost:8080/api/v1/media/download/
+    download-prefix: http://localhost:8888/api/v1/uploads/company-logos/
+
