@@ -48,7 +48,6 @@ public class Job {
     @Column(nullable = false, length = 50)
     JobCategory category;
 
-
     String city;
 
     @Enumerated(EnumType.STRING)
@@ -75,5 +74,4 @@ public class Job {
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Application> applications = new ArrayList<>();
-
 }

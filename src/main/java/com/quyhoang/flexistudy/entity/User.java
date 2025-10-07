@@ -3,8 +3,10 @@ package com.quyhoang.flexistudy.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +33,9 @@ public class User {
     String phone;
     String avatarUrl;
     LocalDate dob;
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @ManyToMany
     Set<Role> roles;

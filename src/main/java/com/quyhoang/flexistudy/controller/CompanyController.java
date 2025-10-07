@@ -1,9 +1,11 @@
 package com.quyhoang.flexistudy.controller;
 
+import com.quyhoang.flexistudy.dto.PageResponse;
 import com.quyhoang.flexistudy.dto.request.ApiResponse;
 import com.quyhoang.flexistudy.dto.request.CompanyCreationRequest;
 import com.quyhoang.flexistudy.dto.request.CompanyUpdateRequest;
 import com.quyhoang.flexistudy.dto.response.CompanyResponse;
+import com.quyhoang.flexistudy.dto.response.UserResponse;
 import com.quyhoang.flexistudy.entity.Job;
 import com.quyhoang.flexistudy.service.CompanyService;
 import jakarta.validation.Valid;
@@ -30,11 +32,17 @@ public class CompanyController {
     }
 
     @GetMapping
-    ApiResponse<List<CompanyResponse>> getAllCompanies() {
-        return ApiResponse.<List<CompanyResponse>>builder()
-                .result(companyService.getAllCompanies())
+    public ApiResponse<PageResponse<CompanyResponse>> getAllCompanies(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "search", required = false) String search
+    ) {
+        PageResponse<CompanyResponse> response = companyService.getAllCompanies(page, size, search);
+        return ApiResponse.<PageResponse<CompanyResponse>>builder()
+                .result(response)
                 .build();
     }
+
 
     @GetMapping("/{companyId}")
     ApiResponse<CompanyResponse> getCompanyById(@PathVariable String companyId) {

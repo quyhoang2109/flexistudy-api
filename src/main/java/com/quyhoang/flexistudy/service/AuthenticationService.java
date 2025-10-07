@@ -125,13 +125,14 @@ public class AuthenticationService {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getId())
+                .subject(user.getUsername())
                 .issuer("quyhoang.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
                 ))
                 .jwtID(UUID.randomUUID().toString())
+                .claim("userId", user.getId())
                 .claim("scope", buildScope(user))
                 .build();
 

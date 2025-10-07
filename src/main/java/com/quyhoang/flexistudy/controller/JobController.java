@@ -1,5 +1,6 @@
 package com.quyhoang.flexistudy.controller;
 
+import com.quyhoang.flexistudy.dto.PageResponse;
 import com.quyhoang.flexistudy.dto.request.ApiResponse;
 import com.quyhoang.flexistudy.dto.request.JobCreationRequest;
 import com.quyhoang.flexistudy.dto.request.JobUpdateRequest;
@@ -31,9 +32,13 @@ public class JobController {
     }
 
     @GetMapping
-    ApiResponse<List<JobResponse>> getAllJobs() {
-        return ApiResponse.<List<JobResponse>>builder()
-                .result(jobService.getAllJobs())
+    public ApiResponse<PageResponse<JobResponse>> getAllJobs(
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    ) {
+        PageResponse<JobResponse> response = jobService.getAllJobs(page, size);
+        return ApiResponse.<PageResponse<JobResponse>>builder()
+                .result(response)
                 .build();
     }
 

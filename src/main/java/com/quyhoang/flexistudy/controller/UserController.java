@@ -1,5 +1,6 @@
 package com.quyhoang.flexistudy.controller;
 
+import com.quyhoang.flexistudy.dto.PageResponse;
 import com.quyhoang.flexistudy.dto.request.ApiResponse;
 import com.quyhoang.flexistudy.dto.request.UserCreationRequest;
 import com.quyhoang.flexistudy.dto.request.UserUpdateRequest;
@@ -32,11 +33,20 @@ public class UserController {
     }
 
     @GetMapping
-    ApiResponse<List<UserResponse>> getAllUser() {
-        return ApiResponse.<List<UserResponse>>builder()
-                .result(userService.getAllUsers())
+    public ApiResponse<PageResponse<UserResponse>> getAllUsers(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "email", required = false) String email
+    ) {
+        PageResponse<UserResponse> response = userService.getAllUsers(page, size, search, username, email);
+        return ApiResponse.<PageResponse<UserResponse>>builder()
+                .result(response)
                 .build();
     }
+
+
 
     @GetMapping("/{userId}")
     ApiResponse<UserResponse> getUserById(@PathVariable("userId") String userId) {
@@ -53,8 +63,10 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    UserResponse updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
-        return userService.updateUser(userId, request);
+    ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request){
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateUser(userId, request))
+                .build();
     }
 
     @DeleteMapping("/{userId}")
@@ -75,5 +87,4 @@ public class UserController {
                 .result(fileUrl)
                 .build();
     }
-
 }

@@ -1,5 +1,6 @@
 package com.quyhoang.flexistudy.service;
 
+import com.quyhoang.flexistudy.dto.PageResponse;
 import com.quyhoang.flexistudy.dto.request.JobCreationRequest;
 import com.quyhoang.flexistudy.dto.request.JobUpdateRequest;
 import com.quyhoang.flexistudy.dto.response.JobResponse;
@@ -17,6 +18,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -64,10 +69,24 @@ public class JobService {
 
 
 
-    public List<JobResponse> getAllJobs() {
-        return jobRepository.findAll().stream()
+    public PageResponse<JobResponse> getAllJobs(int page, int size) {
+        Sort sort = Sort.by("postedAt").descending();
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+
+        Page<Job> jobPage = jobRepository.findAll(pageable);
+
+        List<JobResponse> jobResponses = jobPage.getContent()
+                .stream()
                 .map(jobMapper::toJobResponse)
                 .toList();
+
+        return PageResponse.<JobResponse>builder()
+                .currentPage(jobPage.getNumber() + 1)   // base 1 để khớp FE
+                .totalPages(jobPage.getTotalPages())
+                .pageSize(jobPage.getSize())
+                .totalElements(jobPage.getTotalElements())
+                .data(jobResponses)
+                .build();
     }
 
     public JobResponse getJobById(String id) {

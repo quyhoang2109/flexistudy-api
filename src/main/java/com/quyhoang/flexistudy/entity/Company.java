@@ -4,7 +4,9 @@ import com.quyhoang.flexistudy.exception.CompanyVerifiedStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
-    @Column(nullable = false, length = 150, unique = true)  // ✅ đặt unique cho tên công ty nếu cần
+    @Column(nullable = false, length = 150, unique = true)
     String name;
 
     @Column(columnDefinition = "TEXT")
@@ -29,6 +31,10 @@ public class Company {
     String website;
 
     int memberNumber;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
