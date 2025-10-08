@@ -1,5 +1,6 @@
 package com.quyhoang.flexistudy.dto.response;
 
+import com.quyhoang.flexistudy.enums.RoleName;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

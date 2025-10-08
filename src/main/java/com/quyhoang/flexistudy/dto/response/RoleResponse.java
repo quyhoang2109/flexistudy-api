@@ -1,5 +1,6 @@
 package com.quyhoang.flexistudy.dto.response;
 
+import com.quyhoang.flexistudy.enums.RoleName;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoleResponse {
-    String name;
+    private RoleName name;
     String description;
     Set<PermissionResponse> permissions;
 }

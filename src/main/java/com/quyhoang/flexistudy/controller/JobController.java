@@ -34,9 +34,10 @@ public class JobController {
     @GetMapping
     public ApiResponse<PageResponse<JobResponse>> getAllJobs(
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(value = "size", required = false, defaultValue = "10") int size
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+            @RequestParam(value = "search", required = false) String search
     ) {
-        PageResponse<JobResponse> response = jobService.getAllJobs(page, size);
+        PageResponse<JobResponse> response = jobService.getAllJobs(page, size, search);
         return ApiResponse.<PageResponse<JobResponse>>builder()
                 .result(response)
                 .build();

@@ -3,6 +3,7 @@ package com.quyhoang.flexistudy.configuration;
 import com.quyhoang.flexistudy.constant.PredefinedRole;
 import com.quyhoang.flexistudy.entity.Role;
 import com.quyhoang.flexistudy.entity.User;
+import com.quyhoang.flexistudy.enums.RoleName;
 import com.quyhoang.flexistudy.repository.RoleRepository;
 import com.quyhoang.flexistudy.repository.UserRepository;
 import lombok.AccessLevel;
@@ -40,17 +41,25 @@ public class ApplicationInitConfig {
     ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
         log.info("Initializing application.....");
         return args -> {
+
+            // 🟢 Seed USER role nếu chưa có
+            roleRepository.findById(RoleName.USER).orElseGet(() ->
+                    roleRepository.save(Role.builder()
+                            .name(RoleName.USER)
+                            .description("User role")
+                            .build())
+            );
+
+            // 🟢 Seed ADMIN role nếu chưa có
+            Role adminRole = roleRepository.findById(RoleName.ADMIN).orElseGet(() ->
+                    roleRepository.save(Role.builder()
+                            .name(RoleName.ADMIN)
+                            .description("Admin role")
+                            .build())
+            );
+
+            // 🟢 Seed user admin mặc định nếu chưa có
             if (userRepository.findByUsername(ADMIN_USER_NAME).isEmpty()) {
-                roleRepository.save(Role.builder()
-                        .name(PredefinedRole.USER_ROLE)
-                        .description("User role")
-                        .build());
-
-                Role adminRole = roleRepository.save(Role.builder()
-                        .name(PredefinedRole.ADMIN_ROLE)
-                        .description("Admin role")
-                        .build());
-
                 var roles = new HashSet<Role>();
                 roles.add(adminRole);
 
@@ -61,8 +70,9 @@ public class ApplicationInitConfig {
                         .build();
 
                 userRepository.save(user);
-                log.warn("admin user has been created with default password: admin, please change it");
+                log.warn("Admin user has been created with default password: admin, please change it");
             }
+
             log.info("Application initialization completed .....");
         };
     }

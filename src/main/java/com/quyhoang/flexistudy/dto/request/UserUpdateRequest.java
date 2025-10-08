@@ -1,5 +1,6 @@
 package com.quyhoang.flexistudy.dto.request;
 
+import com.quyhoang.flexistudy.enums.RoleName;
 import com.quyhoang.flexistudy.validator.DobConstraint;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,5 +24,5 @@ public class UserUpdateRequest {
 
     @DobConstraint(min = 18, message = "INVALID_DOB")
     LocalDate dob;
-    List<String> roles;
+    List<RoleName> roles;
 }

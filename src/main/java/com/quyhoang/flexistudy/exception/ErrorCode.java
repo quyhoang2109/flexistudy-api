@@ -23,6 +23,7 @@ public enum ErrorCode {
     JOB_REQUIRED_EXISTED(1013, "Job required is existed", HttpStatus.BAD_REQUEST),
     JOB_SKILL_REQUIRED_IS_NOT_FOUND(1014, "Job required Skill is not found", HttpStatus.BAD_REQUEST),
     SKILL_EXISTED(1015, "Skill is existed", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_FOUND(1016, "Role is invalid", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

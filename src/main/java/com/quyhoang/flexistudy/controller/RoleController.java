@@ -3,6 +3,7 @@ package com.quyhoang.flexistudy.controller;
 import com.quyhoang.flexistudy.dto.request.ApiResponse;
 import com.quyhoang.flexistudy.dto.request.RoleRequest;
 import com.quyhoang.flexistudy.dto.response.RoleResponse;
+import com.quyhoang.flexistudy.enums.RoleName;
 import com.quyhoang.flexistudy.service.RoleService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,8 @@ public class RoleController {
     }
 
     @DeleteMapping("/{role}")
-    ApiResponse<Void> delete(@PathVariable String role) {
+    ApiResponse<Void> delete(@PathVariable RoleName role) {
         roleService.delete(role);
         return ApiResponse.<Void>builder().build();
     }
-
 }

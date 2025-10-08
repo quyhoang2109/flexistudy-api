@@ -8,9 +8,9 @@ server:
 
 spring:
   datasource:
-    url: "jdbc:mysql://localhost:3306/identity_service"
+    url: "jdbc:mysql://maglev.proxy.rlwy.net:45588/railway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
     username: root
-    password: root
+    password: gUhlowiuNMAkpxBSUvvkNUpANFcrSNKU
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,6 +20,16 @@ jwt:
   signerKey: "QArxkDscJw8ogDUNNKhwlvtbLR96CtEIgDbUzkkeN+iqXg6ucLvwU/LPkDVxHpzM"
   valid-Duration: 3600 # in second
   refreshable-duration: 360000 # in second
+
+openapi:
+  service:
+    api-docs: Flexistudy-Service API
+    server: http://localhost:8080
+    title: Flexistudy-Service API
+    version: 1.0.0
+springdoc:
+  swagger-ui:
+    enabled: true
 
 app:
   file:

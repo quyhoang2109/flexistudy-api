@@ -35,9 +35,6 @@ public class JobCreationRequest {
     WorkMode mode;
     @NotBlank String city;
 
-    @NotNull
-    JobStatus status;
-
     @NotBlank
     String companyId;
     @NotEmpty

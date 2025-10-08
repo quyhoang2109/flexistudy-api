@@ -30,6 +30,7 @@ public class JobResponse {
     JobStatus status;
     LocalDateTime postedAt;
     String companyName;
+    String companyLogoUrl;
 
     List<JobRequiredSkillResponse> requiredSkills;
 }

@@ -1,6 +1,6 @@
 package com.quyhoang.flexistudy.enums;
 
-public enum Role {
+public enum RoleName {
     ADMIN,
     USER,
     RECRUITER

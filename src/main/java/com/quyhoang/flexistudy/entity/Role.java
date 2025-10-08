@@ -1,5 +1,6 @@
 package com.quyhoang.flexistudy.entity;
 
+import com.quyhoang.flexistudy.enums.RoleName;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,9 +16,11 @@ import java.util.Set;
 @Entity
 public class Role {
     @Id
-    String name;
+    @Enumerated(EnumType.STRING)
+    RoleName name;
+
     String description;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     Set<Permission> permissions;
 }

@@ -7,6 +7,7 @@ import com.quyhoang.flexistudy.dto.response.JobResponse;
 import com.quyhoang.flexistudy.entity.Company;
 import com.quyhoang.flexistudy.entity.Job;
 import com.quyhoang.flexistudy.entity.JobRequiredSkill;
+import com.quyhoang.flexistudy.enums.JobStatus;
 import com.quyhoang.flexistudy.exception.AppException;
 import com.quyhoang.flexistudy.exception.ErrorCode;
 import com.quyhoang.flexistudy.mapper.JobMapper;
@@ -48,6 +49,8 @@ public class JobService {
         job.setCompany(c);
         job.setRequiredSkills(new ArrayList<>());
 
+        job.setStatus(JobStatus.PENDING);
+
         if (req.getSkillIds() != null && !req.getSkillIds().isEmpty()) {
             var skills = skillRepository.findAllById(req.getSkillIds());
             for (var s : skills) {
@@ -67,13 +70,20 @@ public class JobService {
     }
 
 
-
-
-    public PageResponse<JobResponse> getAllJobs(int page, int size) {
+    public PageResponse<JobResponse> getAllJobs(int page, int size, String search) {
         Sort sort = Sort.by("postedAt").descending();
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
-        Page<Job> jobPage = jobRepository.findAll(pageable);
+        Page<Job> jobPage;
+
+        if (search != null && !search.trim().isEmpty()) {
+            // Tìm theo title hoặc tên công ty (không phân biệt hoa thường)
+            jobPage = jobRepository.findByTitleContainingIgnoreCaseOrCompany_NameContainingIgnoreCase(
+                    search, search, pageable
+            );
+        } else {
+            jobPage = jobRepository.findAll(pageable);
+        }
 
         List<JobResponse> jobResponses = jobPage.getContent()
                 .stream()
@@ -81,13 +91,14 @@ public class JobService {
                 .toList();
 
         return PageResponse.<JobResponse>builder()
-                .currentPage(jobPage.getNumber() + 1)   // base 1 để khớp FE
+                .currentPage(jobPage.getNumber() + 1)
                 .totalPages(jobPage.getTotalPages())
                 .pageSize(jobPage.getSize())
                 .totalElements(jobPage.getTotalElements())
                 .data(jobResponses)
                 .build();
     }
+
 
     public JobResponse getJobById(String id) {
         Job job = jobRepository.findById(id)

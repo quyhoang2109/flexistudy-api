@@ -23,6 +23,7 @@ public interface JobMapper {
     // requiredSkills (List<JobRequiredSkill>) -> (List<JobRequiredSkillResponse>) nhờ JobRequiredSkillMapper
     @Mapping(target = "companyName",   source = "company.name")
     @Mapping(target = "requiredSkills", source = "requiredSkills")
+    @Mapping(target = "companyLogoUrl", source = "company.logoUrl")
     JobResponse toJobResponse(Job job);
 
     // Đảm bảo không trả null list (tuỳ ý)

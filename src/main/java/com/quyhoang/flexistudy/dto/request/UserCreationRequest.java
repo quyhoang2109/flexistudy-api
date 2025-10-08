@@ -1,11 +1,13 @@
 package com.quyhoang.flexistudy.dto.request;
 
+import com.quyhoang.flexistudy.enums.RoleName;
 import com.quyhoang.flexistudy.validator.DobConstraint;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -26,6 +28,7 @@ public class UserCreationRequest {
     String address;
     String phone;
     String avatarUrl;
+    Set<RoleName> roles;
 
     @DobConstraint(min = 12, message = "INVALID_DOB")
     LocalDate dob;

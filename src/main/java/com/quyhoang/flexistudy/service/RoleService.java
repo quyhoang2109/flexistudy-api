@@ -2,6 +2,7 @@ package com.quyhoang.flexistudy.service;
 
 import com.quyhoang.flexistudy.dto.request.RoleRequest;
 import com.quyhoang.flexistudy.dto.response.RoleResponse;
+import com.quyhoang.flexistudy.enums.RoleName;
 import com.quyhoang.flexistudy.mapper.RoleMapper;
 import com.quyhoang.flexistudy.repository.PermissionRepository;
 import com.quyhoang.flexistudy.repository.RoleRepository;
@@ -38,7 +39,7 @@ public class RoleService {
         return roles.stream().map(roleMapper::toRoleResponse).toList();
     }
 
-    public void delete(String role) {
+    public void delete(RoleName role) {
         roleRepository.deleteById(role);
     }
 }

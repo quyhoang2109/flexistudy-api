@@ -1,12 +1,12 @@
 package com.quyhoang.flexistudy.service;
 
-import com.quyhoang.flexistudy.constant.PredefinedRole;
 import com.quyhoang.flexistudy.dto.PageResponse;
 import com.quyhoang.flexistudy.dto.request.UserCreationRequest;
 import com.quyhoang.flexistudy.dto.request.UserUpdateRequest;
 import com.quyhoang.flexistudy.dto.response.UserResponse;
 import com.quyhoang.flexistudy.entity.Role;
 import com.quyhoang.flexistudy.entity.User;
+import com.quyhoang.flexistudy.enums.RoleName;
 import com.quyhoang.flexistudy.exception.AppException;
 import com.quyhoang.flexistudy.exception.ErrorCode;
 import com.quyhoang.flexistudy.mapper.UserMapper;
@@ -30,13 +30,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -57,17 +58,21 @@ public class UserService {
     String urlPrefix;
 
     public UserResponse createUser(UserCreationRequest request) {
-
-        //map data into user
         User user = userMapper.toUser(request);
-
-        // Hash password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        HashSet<Role> roles = new HashSet<>();
-        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
+        Set<Role> roleEntities;
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            roleEntities = request.getRoles().stream()
+                    .map(roleName -> roleRepository.findById(roleName)
+                            .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND)))
+                    .collect(Collectors.toSet());
+        } else {
+            roleEntities = new HashSet<>();
+            roleRepository.findById(RoleName.USER).ifPresent(roleEntities::add);
+        }
 
-        user.setRoles(roles);
+        user.setRoles(roleEntities);
 
         try {
             user = userRepository.save(user);
@@ -75,7 +80,7 @@ public class UserService {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        return userMapper.toUserResponse(user);
     }
 
     public UserResponse getMyInfor() {
@@ -125,8 +130,6 @@ public class UserService {
     }
 
 
-
-
     @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getUserById(String id) {
         return userMapper.toUserResponse(userRepository.findById(id)
@@ -137,21 +140,20 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        // Áp dụng mapper để cập nhật các trường thông thường
-        userMapper.updateUser(user, request);
+        userMapper.updateNonPasswordFields(user, request);
 
-        // ✅ Chỉ update password nếu client có gửi lên
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
-        // Cập nhật roles (nếu request.getRoles() là List<String> hoặc List<UUID>)
-        var roles = roleRepository.findAllById(request.getRoles());
-        user.setRoles(new HashSet<>(roles));
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            Set<Role> roles = new HashSet<>(roleRepository.findAllById(request.getRoles()));
+            user.setRoles(roles);
+        }
 
-        // Lưu lại thay đổi
         return userMapper.toUserResponse(userRepository.save(user));
     }
+
 
 
     public void deleteUserById(String userId) {

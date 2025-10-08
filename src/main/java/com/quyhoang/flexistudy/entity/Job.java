@@ -38,7 +38,7 @@ public class Job {
 
     Integer minSalary;
     Integer maxSalary;
-    String currency; // VND, USD, ...
+    String currency;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
